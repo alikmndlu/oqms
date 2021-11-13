@@ -1,8 +1,8 @@
 package com.alikmndlu.oqms.api;
 
-import com.alikmndlu.oqms.model.User;
-import com.alikmndlu.oqms.dto.TeacherSelectionDto;
 import com.alikmndlu.oqms.dto.UserWithoutPasswordDto;
+import com.alikmndlu.oqms.model.User;
+import com.alikmndlu.oqms.service.RoleService;
 import com.alikmndlu.oqms.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,62 +13,52 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
-//@RestController
-//@RequestMapping("/api/admin")
-//@RequiredArgsConstructor
-//@Transactional
-//@Slf4j
+@RestController
+@RequestMapping("/api/admin")
+@RequiredArgsConstructor
+@Transactional
+@Slf4j
 public class AdminController {
 
-//    private final UserService userService;
-//
-//    @GetMapping("/users")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    public ResponseEntity<List<UserWithoutPasswordDto>> getUsers() {
-//
-//        // get all users
-//        List<User> users = userService.getAllUsers();
-//
-//        List<UserWithoutPasswordDto> resultList = new ArrayList<>();
-//
-//        // transfer users to dto
-//        users.forEach(user -> {
-//            resultList.add(new UserWithoutPasswordDto(
-//                    user.getId(),
-//                    user.getName(),
-//                    user.getUsername(),
-//                    user.getRoles().stream().findFirst().get().getName()
-//            ));
-//        });
-//
-//        return ResponseEntity.ok().body(resultList);
-//    }
-//
-//    @PutMapping("/users/edit-user")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    public String updateUser(@RequestBody UserWithoutPasswordDto updateUser) {
-//        Optional<User> optionalUser = userService.findById(updateUser.getId());
-//
-//        if (optionalUser.isEmpty()) {
-//            return "error";
-//        }
-//
-//        User user = optionalUser.get();
-//
-//        //todo check unique username
-////        if (!updateUser.getUsername().equals(user.getUsername()) || userService.findByUsername(updateUser.getUsername()).isPresent()){
-////            return "not unique username!";
-////        }
-//
-//        user.setName(updateUser.getName());
-//        user.setUsername(updateUser.getUsername());
-//        user.setRoles(new ArrayList<>());
-//        userService.saveUser(user);
-//        userService.addRoleToUser(user.getUsername(), updateUser.getRole());
-//        return "success";
-//    }
+    private final UserService userService;
+
+    private final RoleService roleService;
+
+    @GetMapping("/users")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<UserWithoutPasswordDto>> getUsers() {
+        // get all users
+        List<User> users = userService.findAll();
+
+        // transfer to UserWithoutPasswordDto and return the list
+        return ResponseEntity.ok().body(
+                users.stream()
+                        .map(UserWithoutPasswordDto::userToUserWithoutPasswordDto)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @PutMapping("/user/update")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> userDto(@RequestBody UserWithoutPasswordDto userDto) {
+        User user = userService.findById(userDto.getId()).get();
+
+        // Check new username is valid or not
+        if (!userDto.getUsername().equals(user.getUsername()) && userService.findByUsername(userDto.getUsername()).isPresent()){
+            return ResponseEntity.badRequest().body("This username is taken before!");
+        }
+
+        // Update user information and role
+        user.setName(userDto.getName());
+        user.setUsername(userDto.getUsername());
+        user.setRoles(new ArrayList<>());
+        userService.save(user);
+        roleService.addRoleToUser(user.getUsername(), userDto.getRole());
+
+        return ResponseEntity.ok().build();
+    }
 //
 //
 //    @GetMapping("/teacher-list")

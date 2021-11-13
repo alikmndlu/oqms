@@ -1,5 +1,6 @@
 package com.alikmndlu.oqms.dto;
 
+import com.alikmndlu.oqms.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,4 +19,14 @@ public class UserWithoutPasswordDto {
     private String username;
 
     private String role;
+
+    public static UserWithoutPasswordDto userToUserWithoutPasswordDto(User user) {
+        return new UserWithoutPasswordDto(
+                user.getId(),
+                user.getName(),
+                user.getUsername(),
+                user.getRoles().stream()
+                        .findFirst().get().getName()
+        );
+    }
 }

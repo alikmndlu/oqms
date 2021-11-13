@@ -31,12 +31,12 @@ public class AuthenticateController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserRegisterDto userDto, BindingResult result) {
-        StringBuilder errorMessage  = new StringBuilder("Error: \n");
+        StringBuilder errorMessage = new StringBuilder("Error: \n");
 
         // Check RegisterDto Validations
-        if (result.hasErrors()){
+        if (result.hasErrors()) {
             List<ObjectError> errors = result.getAllErrors();
-            for(ObjectError  e :  errors) {
+            for (ObjectError e : errors) {
                 errorMessage.append("- ").append(e.getDefaultMessage()).append("\n");
             }
             return ResponseEntity.badRequest().body(errorMessage.toString());

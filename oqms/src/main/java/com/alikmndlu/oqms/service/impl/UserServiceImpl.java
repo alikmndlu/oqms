@@ -36,6 +36,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRepository>
     }
 
     @Override
+    public User save(User user) {
+        user.setPassword(
+                passwordEncoder.encode(user.getPassword())
+        );
+        return super.save(user);
+    }
+
+    @Override
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
