@@ -1,7 +1,8 @@
 package com.alikmndlu.oqms;
 
-import com.alikmndlu.oqms.domain.Role;
-import com.alikmndlu.oqms.domain.User;
+import com.alikmndlu.oqms.model.Role;
+import com.alikmndlu.oqms.model.User;
+import com.alikmndlu.oqms.service.RoleService;
 import com.alikmndlu.oqms.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,24 +21,24 @@ public class OqmsApplication {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public CommandLineRunner runner(UserService userService){
-        return  args -> {
-          userService.saveRole(new Role("ROLE_STUDENT"));
-          userService.saveRole(new Role("ROLE_TEACHER"));
-          userService.saveRole(new Role("ROLE_ADMIN"));
+    public CommandLineRunner runner(UserService userService, RoleService roleService) {
+        return args -> {
+            roleService.save(new Role("ROLE_STUDENT"));
+            roleService.save(new Role("ROLE_TEACHER"));
+            roleService.save(new Role("ROLE_ADMIN"));
 
-          userService.saveUser(new User("Ali Erfagh", "student", "password", new ArrayList<>()));
-          userService.saveUser(new User("Ali Noori", "teacher", "password", new ArrayList<>()));
-          userService.saveUser(new User("Ali Kmndlu", "admin", "password", new ArrayList<>()));
+            userService.save(new User("Ali Erfagh", "student", "password"));
+            userService.save(new User("Ali Noori", "teacher", "password"));
+            userService.save(new User("Ali Kmndlu", "admin", "password"));
 
-          userService.addRoleToUser("student", "ROLE_STUDENT");
-          userService.addRoleToUser("teacher", "role_TEACHER");
-          userService.addRoleToUser("admin", "ROLE_ADMIN");
+            roleService.addRoleToUser("student", "ROLE_STUDENT");
+            roleService.addRoleToUser("teacher", "ROLE_TEACHER");
+            roleService.addRoleToUser("admin", "ROLE_ADMIN");
         };
     }
 

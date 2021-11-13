@@ -1,4 +1,4 @@
-package com.alikmndlu.oqms.domain;
+package com.alikmndlu.oqms.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import java.util.Collection;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseDomain<Long> {
+public class User extends BaseModel<Long> {
 
     private String name;
 
@@ -26,6 +26,14 @@ public class User extends BaseDomain<Long> {
 
     private String password;
 
+    private boolean isActive = false;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
+
+    public User(String name, String username, String password) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+    }
 }

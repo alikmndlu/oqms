@@ -1,4 +1,4 @@
-package com.alikmndlu.oqms.filter;
+package com.alikmndlu.oqms.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -50,19 +50,16 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         String accessToken = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + (10 * 60 * 1000)))
+                .withExpiresAt(new Date(System.currentTimeMillis() + (24 * 60 * 60 * 1000))) // One Day
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
 
         String refreshToken = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + (30 * 60 * 1000)))
+                .withExpiresAt(new Date(System.currentTimeMillis() + (3 * 24 * 60 * 60 * 1000))) // Three Days
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
-
-//        response.setHeader("access_token", accessToken);
-//        response.setHeader("refresh_token", refreshToken);
 
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", accessToken);
