@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -46,6 +48,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRepository>
     @Override
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public List<User> findTeachers() {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRoles().get(0).getName().equals("ROLE_TEACHER"))
+                .collect(Collectors.toList());
     }
 
 

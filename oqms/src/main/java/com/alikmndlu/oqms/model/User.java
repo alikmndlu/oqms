@@ -11,6 +11,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users_table")
@@ -29,7 +30,7 @@ public class User extends BaseModel<Long> {
     private boolean isActive = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<Role> roles = new ArrayList<>();
+    private List<Role> roles = new ArrayList<>();
 
     public User(String name, String username, String password) {
         this.name = name;

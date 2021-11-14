@@ -1,5 +1,6 @@
 package com.alikmndlu.oqms.api;
 
+import com.alikmndlu.oqms.dto.UserIdNameUsernameDto;
 import com.alikmndlu.oqms.dto.UserWithoutPasswordDto;
 import com.alikmndlu.oqms.model.User;
 import com.alikmndlu.oqms.service.RoleService;
@@ -46,7 +47,7 @@ public class AdminController {
         User user = userService.findById(userDto.getId()).get();
 
         // Check new username is valid or not
-        if (!userDto.getUsername().equals(user.getUsername()) && userService.findByUsername(userDto.getUsername()).isPresent()){
+        if (!userDto.getUsername().equals(user.getUsername()) && userService.findByUsername(userDto.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body("This username is taken before!");
         }
 
@@ -59,19 +60,19 @@ public class AdminController {
 
         return ResponseEntity.ok().build();
     }
-//
-//
-//    @GetMapping("/teacher-list")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    public ResponseEntity<List<TeacherSelectionDto>> getTeachers() {
-//        List<TeacherSelectionDto> teachers = new ArrayList<>();
-//        userService.getTeachers().forEach(teacher -> {
-//            teachers.add(new TeacherSelectionDto(
-//                    teacher.getId(),
-//                    teacher.getName(),
-//                    teacher.getUsername()
-//            ));
-//        });
-//        return ResponseEntity.ok().body(teachers);
-//    }
+
+
+    @GetMapping("/teachers")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<UserIdNameUsernameDto>> getTeachers() {
+        // GEt All Teachers
+        List<User> teachers = userService.findTeachers();
+
+        // Transfer Teacher to UserIdNameUsernameDto and return
+        return ResponseEntity.ok().body(
+                UserIdNameUsernameDto.UserListToUserIdNameUsernameDtoList(
+                        teachers
+                )
+        );
+    }
 }
