@@ -1,6 +1,6 @@
 package com.alikmndlu.oqms.service.impl;
 
-import com.alikmndlu.oqms.dto.CourseInsertDto;
+import com.alikmndlu.oqms.dto.CourseTitleStartEndTeacherUsernameDto;
 import com.alikmndlu.oqms.model.Course;
 import com.alikmndlu.oqms.repository.CourseRepository;
 import com.alikmndlu.oqms.service.CourseService;
@@ -28,7 +28,7 @@ public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepos
     }
 
     @Override
-    public void addCourse(CourseInsertDto courseDto) {
+    public void addCourse(CourseTitleStartEndTeacherUsernameDto courseDto) {
         courseRepository.save(
                 new Course(
                         courseDto.getTitle(),
@@ -37,5 +37,16 @@ public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepos
                         userService.findByUsername(courseDto.getTeacherUsername()).get()
                 )
         );
+    }
+
+    @Override
+    public void update(Long courseId, CourseTitleStartEndTeacherUsernameDto courseDto) {
+        Course course = courseRepository.findById(courseId).get();
+        course.setTitle(courseDto.getTitle());
+        course.setStart(LocalDate.parse(courseDto.getStart()));
+        course.setEnd(LocalDate.parse(courseDto.getEnd()));
+        course.setTeacher(userService.findByUsername(courseDto.getTeacherUsername()).get());
+
+        courseRepository.save(course);
     }
 }

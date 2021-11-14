@@ -42,24 +42,19 @@ public class CourseResourceController {
 
     @PostMapping("/course/add")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void addCourse(@RequestBody CourseInsertDto courseDto) {
+    public void addCourse(@RequestBody CourseTitleStartEndTeacherUsernameDto courseDto) {
         log.info("CourseResourceController -> Add Course");
         courseService.addCourse(courseDto);
     }
 
-      //TODO mapstruct library
-//    @PutMapping("/admin/course/update")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    public void updateCourse(@RequestBody UpdateCourseDto courseDto) {
-//        Course course = courseService.findById(courseDto.getId()).get();
-//        course.setTitle(courseDto.getTitle());
-//        course.setStart(LocalDate.parse(courseDto.getStart()));
-//        course.setEnd(LocalDate.parse(courseDto.getEnd()));
-//        course.setTeacher(userService.findByUsername(courseDto.getTeacher()).get());
-//        courseService.saveCourse(course);
-//        log.info("Update Course -> id:{}", course.getId());
-//    }
-//
+    //TODO mapstruct library
+    @PutMapping("/course/update/{courseId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void updateCourse(@RequestBody CourseTitleStartEndTeacherUsernameDto courseDto, @PathVariable("courseId") Long courseId) {
+        courseService.update(courseId, courseDto);
+        log.info("CourseResourceController -> Update Course");
+    }
+
 //    @PostMapping("/admin/add-student-to-course")
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
 //    public void addStudentToCourse(@RequestBody AddUserToCourseDto addUserToCourseDto) {
