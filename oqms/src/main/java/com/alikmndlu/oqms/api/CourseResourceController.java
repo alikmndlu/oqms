@@ -52,7 +52,14 @@ public class CourseResourceController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void updateCourse(@RequestBody CourseTitleStartEndTeacherUsernameDto courseDto, @PathVariable("courseId") Long courseId) {
         courseService.update(courseId, courseDto);
-        log.info("CourseResourceController -> Update Course");
+        log.info("CourseResourceController -> Update Course {}", courseId);
+    }
+
+    @DeleteMapping("/course/delete/{courseId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void deleteCourse(@PathVariable("courseId") Long courseId) {
+        courseService.deleteById(courseId);
+        log.info("CourseResourceController -> Delete Course {}", courseId);
     }
 
 //    @PostMapping("/admin/add-student-to-course")
