@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -73,19 +74,15 @@ public class CourseResourceController {
                 userCourseDto.getStudentUsername(),
                 userCourseDto.getCourseId());
     }
-//
-//    @GetMapping("admin/course/students/{courseId}")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    public ResponseEntity<Collection<UserUsernameNameDto>> getCourseStudents(@PathVariable Long courseId) {
-//        Course course = courseService.findById(courseId).get();
-//        List<UserUsernameNameDto> students = new ArrayList<>();
-//        course.getStudents()
-//                .forEach(student -> {
-//                    students.add(new UserUsernameNameDto(
-//                       student.getName(),
-//                       student.getUsername()
-//                    ));
-//                });
-//        return ResponseEntity.ok().body(students);
-//    }
+
+    @GetMapping("/course/students/{courseId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<UserIdNameUsernameDto>> getCourseStudents(@PathVariable Long courseId) {
+        Course course = courseService.findById(courseId).get();
+        return ResponseEntity.ok().body(
+                UserIdNameUsernameDto.UserListToUserIdNameUsernameDtoList(
+                        course.getStudents()
+                )
+        );
+    }
 }

@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "courses_table")
@@ -31,7 +32,7 @@ public class Course extends BaseModel<Long> {
     private User teacher;
 
     @ManyToMany
-    private Collection<User> students = new ArrayList<>();
+    private List<User> students = new ArrayList<>();
 
     public Course(String title, LocalDate start, LocalDate end, User teacher) {
         this.title = title;
