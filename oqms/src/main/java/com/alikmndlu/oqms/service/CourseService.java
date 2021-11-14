@@ -8,4 +8,6 @@ public interface CourseService extends BaseService<Course, Long> {
     void addCourse(CourseTitleStartEndTeacherUsernameDto courseDto);
 
     void update(Long courseId, CourseTitleStartEndTeacherUsernameDto courseDto);
+
+    void addStudentToCourse(Long courseId, String studentUsername);
 }

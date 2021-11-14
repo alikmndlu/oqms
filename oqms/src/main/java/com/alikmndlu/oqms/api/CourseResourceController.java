@@ -2,6 +2,7 @@ package com.alikmndlu.oqms.api;
 
 import com.alikmndlu.oqms.model.Course;
 import com.alikmndlu.oqms.dto.*;
+import com.alikmndlu.oqms.model.User;
 import com.alikmndlu.oqms.service.CourseService;
 import com.alikmndlu.oqms.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -62,15 +63,16 @@ public class CourseResourceController {
         log.info("CourseResourceController -> Delete Course {}", courseId);
     }
 
-//    @PostMapping("/admin/add-student-to-course")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    public void addStudentToCourse(@RequestBody AddUserToCourseDto addUserToCourseDto) {
-//        User student = userService.findByUsername(addUserToCourseDto.getStudentUsername()).get();
-//        Course course = courseService.findById(addUserToCourseDto.getCourseId()).get();
-//
-//        course.getStudents().add(student);
-//        log.info("User {} Add To Course {}", student.getUsername(), course.getTitle());
-//    }
+    @PostMapping("/course/add-student")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void addStudentToCourse(@RequestBody UserUsernameCourseIdDto userCourseDto) {
+        courseService.addStudentToCourse(
+                userCourseDto.getCourseId(),
+                userCourseDto.getStudentUsername());
+        log.info("CourseResourceController -> Add User {} To Course {}",
+                userCourseDto.getStudentUsername(),
+                userCourseDto.getCourseId());
+    }
 //
 //    @GetMapping("admin/course/students/{courseId}")
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
