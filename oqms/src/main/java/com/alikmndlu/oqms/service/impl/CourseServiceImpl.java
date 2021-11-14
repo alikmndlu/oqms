@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Transactional
@@ -57,5 +58,11 @@ public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepos
         Course course = courseRepository.findById(courseId).get();
         course.getStudents().add(student);
         save(course);
+    }
+
+    @Override
+    public List<Course> findTeacherCourses(String loggedInTeacherUsername) {
+        User teacher = userService.findByUsername(loggedInTeacherUsername).get();
+        return courseRepository.findByTeacherId(teacher.getId());
     }
 }

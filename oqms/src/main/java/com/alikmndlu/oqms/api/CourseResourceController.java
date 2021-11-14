@@ -1,19 +1,19 @@
 package com.alikmndlu.oqms.api;
 
-import com.alikmndlu.oqms.model.Course;
 import com.alikmndlu.oqms.dto.*;
-import com.alikmndlu.oqms.model.User;
+import com.alikmndlu.oqms.model.Course;
 import com.alikmndlu.oqms.service.CourseService;
 import com.alikmndlu.oqms.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -84,5 +84,17 @@ public class CourseResourceController {
                         course.getStudents()
                 )
         );
+    }
+
+    @GetMapping("/teacher/courses")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public ResponseEntity<List<CourseIdTitleStartEndDto>> getTeacherCourses() {
+        String loggedInTeacherUsername = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Course> courses = courseService.findTeacherCourses(loggedInTeacherUsername);
+        return ResponseEntity.ok().body(
+                CourseIdTitleStartEndDto
+                        .CourseListToCourseIdTitleStartEndDtoList(courses)
+        );
+
     }
 }
