@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddCourseDto {
+public class CourseInsertDto {
 
     private String title;
 
@@ -17,5 +17,5 @@ public class AddCourseDto {
 
     private String end;
 
-    private String teacher;
+    private String teacherUsername;
 }

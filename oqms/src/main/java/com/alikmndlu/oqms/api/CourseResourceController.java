@@ -11,7 +11,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,6 +27,8 @@ public class CourseResourceController {
     @GetMapping("/courses")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<CourseIdTitleStartEndTeacherDto>> getCourses() {
+        log.info("CourseResourceController -> Get Courses");
+
         // Get courses list
         List<Course> courses = courseService.findAll();
 
@@ -38,21 +39,15 @@ public class CourseResourceController {
                 )
         );
     }
-//
-//    @PostMapping("/admin/course/add")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    public void addCourse(@RequestBody AddCourseDto courseDto) {
-//        Course course = new Course(
-//                courseDto.getTitle(),
-//                LocalDate.parse(courseDto.getStart()),
-//                LocalDate.parse(courseDto.getEnd()),
-//                userService.findByUsername(courseDto.getTeacher()).get()
-//        );
-//        courseService.saveCourse(course);
-//        log.info("Add New Course -> {}", courseDto.getTitle());
-//    }
-//
-//    //TODO mapstruct library
+
+    @PostMapping("/course/add")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void addCourse(@RequestBody CourseInsertDto courseDto) {
+        log.info("CourseResourceController -> Add Course");
+        courseService.addCourse(courseDto);
+    }
+
+      //TODO mapstruct library
 //    @PutMapping("/admin/course/update")
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
 //    public void updateCourse(@RequestBody UpdateCourseDto courseDto) {
