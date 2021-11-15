@@ -1,7 +1,11 @@
 package com.alikmndlu.oqms;
 
+import com.alikmndlu.oqms.model.Course;
+import com.alikmndlu.oqms.model.Quiz;
 import com.alikmndlu.oqms.model.Role;
 import com.alikmndlu.oqms.model.User;
+import com.alikmndlu.oqms.service.CourseService;
+import com.alikmndlu.oqms.service.QuizService;
 import com.alikmndlu.oqms.service.RoleService;
 import com.alikmndlu.oqms.service.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -11,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @SpringBootApplication
@@ -26,7 +31,11 @@ public class OqmsApplication {
     }
 
     @Bean
-    public CommandLineRunner runner(UserService userService, RoleService roleService) {
+    public CommandLineRunner runner(
+            UserService userService,
+            RoleService roleService,
+            CourseService courseService,
+            QuizService quizService) {
         return args -> {
             roleService.save(new Role("ROLE_STUDENT"));
             roleService.save(new Role("ROLE_TEACHER"));
@@ -39,6 +48,20 @@ public class OqmsApplication {
             roleService.addRoleToUser("student", "ROLE_STUDENT");
             roleService.addRoleToUser("teacher", "ROLE_TEACHER");
             roleService.addRoleToUser("admin", "ROLE_ADMIN");
+
+            courseService.save(new Course(
+                    "Java/Spring",
+                    LocalDate.parse("2022-01-10"),
+                    LocalDate.parse("2022-01-30"),
+                    userService.findByUsername("teacher").get()
+            ));
+
+            quizService.save(new Quiz(
+                    "Riazi 1400-09",
+                    "MAth Exam 24 Question 80 Mins Time",
+                    80L,
+                    courseService.findById(1L).get()
+            ));
         };
     }
 

@@ -78,6 +78,7 @@ public class CourseResourceController {
     @GetMapping("/course/students/{courseId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<UserIdNameUsernameDto>> getCourseStudents(@PathVariable Long courseId) {
+        log.info("CourseResourceController -> Get Enroll Students In Course {}", courseId);
         Course course = courseService.findById(courseId).get();
         return ResponseEntity.ok().body(
                 UserIdNameUsernameDto.UserListToUserIdNameUsernameDtoList(
@@ -89,6 +90,7 @@ public class CourseResourceController {
     @GetMapping("/teacher/courses")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     public ResponseEntity<List<CourseIdTitleStartEndDto>> getTeacherCourses() {
+        log.info("CourseResourceController -> Teacher Fetch Courses List");
         String loggedInTeacherUsername = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Course> courses = courseService.findTeacherCourses(loggedInTeacherUsername);
         return ResponseEntity.ok().body(
