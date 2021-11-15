@@ -44,4 +44,10 @@ public class QuizResourceController {
 
         return ResponseEntity.ok().body(quizzes);
     }
+
+    @DeleteMapping("teacher/quiz/delete/{quizz-id}")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public void deleteQuiz(@PathVariable("quizz-id") Long quizId){
+        quizService.deleteById(quizId);
+    }
 }
