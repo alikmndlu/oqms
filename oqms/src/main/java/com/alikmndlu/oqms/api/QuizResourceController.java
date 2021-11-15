@@ -2,6 +2,7 @@ package com.alikmndlu.oqms.api;
 
 import com.alikmndlu.oqms.dto.QuizIdTitleInfoTimeDto;
 import com.alikmndlu.oqms.dto.QuizTitleInfoTimeCourseIdDto;
+import com.alikmndlu.oqms.dto.QuizTitleInfoTimeDto;
 import com.alikmndlu.oqms.service.CourseService;
 import com.alikmndlu.oqms.service.QuizService;
 import com.alikmndlu.oqms.service.UserService;
@@ -45,9 +46,16 @@ public class QuizResourceController {
         return ResponseEntity.ok().body(quizzes);
     }
 
+
     @DeleteMapping("teacher/quiz/delete/{quizz-id}")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     public void deleteQuiz(@PathVariable("quizz-id") Long quizId){
         quizService.deleteById(quizId);
+    }
+
+    @PutMapping("teacher/quiz/update")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public void deleteQuiz(@RequestBody QuizIdTitleInfoTimeDto quizzDto){
+        quizService.updateQuiz(quizzDto);
     }
 }

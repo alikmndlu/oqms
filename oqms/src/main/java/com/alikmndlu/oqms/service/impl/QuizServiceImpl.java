@@ -1,5 +1,6 @@
 package com.alikmndlu.oqms.service.impl;
 
+import com.alikmndlu.oqms.dto.QuizIdTitleInfoTimeDto;
 import com.alikmndlu.oqms.dto.QuizTitleInfoTimeCourseIdDto;
 import com.alikmndlu.oqms.model.Quiz;
 import com.alikmndlu.oqms.repository.QuizRepository;
@@ -42,5 +43,13 @@ public class QuizServiceImpl extends BaseServiceImpl<Quiz, Long, QuizRepository>
     @Override
     public List<Quiz> findByCourseId(Long courseId) {
         return quizRepository.findByCourseId(courseId);
+    }
+
+    @Override
+    public void updateQuiz(QuizIdTitleInfoTimeDto quizDto) {
+        Quiz quiz = findById(quizDto.getId()).get();
+        quiz.setTitle(quizDto.getTitle());
+        quiz.setInfo(quizDto.getInfo());
+        quiz.setTime(quizDto.getTime());
     }
 }
