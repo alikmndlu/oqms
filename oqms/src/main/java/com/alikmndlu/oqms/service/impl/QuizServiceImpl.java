@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -36,5 +37,10 @@ public class QuizServiceImpl extends BaseServiceImpl<Quiz, Long, QuizRepository>
                 quizDto.getTime(),
                 courseService.findById(quizDto.getCourseId()).get()
         ));
+    }
+
+    @Override
+    public List<Quiz> findByCourseId(Long courseId) {
+        return quizRepository.findByCourseId(courseId);
     }
 }
