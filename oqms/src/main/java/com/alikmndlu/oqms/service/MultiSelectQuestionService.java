@@ -11,4 +11,6 @@ public interface MultiSelectQuestionService extends BaseService<MultiSelectQuest
     void insertMultiSelectQuestion(MultiSelectQuestionTitleTextDto questionDto);
 
     void attachTrueAnswerToQuestion(QuestionTrueAnswerDto dto);
+
+    void updateQuestion(MultiSelectQuestionTitleTextDto questionDto, Long questionId);
 }

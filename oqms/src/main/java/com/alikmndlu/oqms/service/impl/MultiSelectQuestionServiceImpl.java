@@ -55,4 +55,17 @@ public class MultiSelectQuestionServiceImpl extends BaseServiceImpl<MultiSelectQ
 //        // Assign TrueAnswer To Question
 //        multiSelectQuestion.setTrueAnswer(trueAnswer);
     }
+
+    @Override
+    public void updateQuestion(MultiSelectQuestionTitleTextDto questionDto, Long questionId) {
+        // Fetch Question
+        MultiSelectQuestion question = findById(questionId).get();
+
+        // Replace New Text And Title
+        question.setText(questionDto.getText());
+        question.setTitle(questionDto.getTitle());
+
+        // Update Question
+        save(question);
+    }
 }

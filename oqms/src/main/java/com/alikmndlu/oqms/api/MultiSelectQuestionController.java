@@ -20,13 +20,19 @@ public class MultiSelectQuestionController {
 
 //    private final  AnswerService answerService;
 
-    @PostMapping("teacher/multi-select-question/create")
+    @PostMapping("teacher/msq/create")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     public void insertMultiSelectQuestion(@RequestBody MultiSelectQuestionTitleTextDto questionDto){
         multiSelectQuestionService.insertMultiSelectQuestion(questionDto);
     }
 
-    @DeleteMapping("teacher/multi-select-question/delete/{question-id}")
+    @PutMapping("teacher/msq/update/{question-id}")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public void updateTitleAndTextQuestion(@RequestBody MultiSelectQuestionTitleTextDto questionDto, @PathVariable("question-id") Long questionId){
+        multiSelectQuestionService.updateQuestion(questionDto, questionId);
+    }
+
+    @DeleteMapping("teacher/msq/delete/{question-id}")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     public void deleteQuestion(@PathVariable("question-id") Long questionId){
         multiSelectQuestionService.deleteById(questionId);
