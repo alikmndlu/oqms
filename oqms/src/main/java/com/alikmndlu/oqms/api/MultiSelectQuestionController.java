@@ -18,7 +18,6 @@ public class MultiSelectQuestionController {
 
     private final MultiSelectQuestionService multiSelectQuestionService;
 
-//    private final  AnswerService answerService;
 
     @PostMapping("teacher/msq/create")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
@@ -37,16 +36,4 @@ public class MultiSelectQuestionController {
     public void deleteQuestion(@PathVariable("question-id") Long questionId){
         multiSelectQuestionService.deleteById(questionId);
     }
-
-//    @PutMapping("teacher/question/set-true-answer")
-//    @PreAuthorize("hasRole('ROLE_TEACHER')")
-//    public void attachTrueAnswerToQuestion(@RequestBody QuestionTrueAnswerDto dto){
-//        multiSelectQuestionService.attachTrueAnswerToQuestion(dto);
-//    }
-//
-//    @PutMapping("teacher/question/add-answer")
-//    @PreAuthorize("hasRole('ROLE_TEACHER')")
-//    public void addAnswerToQuestion(@RequestBody QuestionAddAnswerDto dto){
-////        answerService.addAnswer(dto);
-//    }
 }
