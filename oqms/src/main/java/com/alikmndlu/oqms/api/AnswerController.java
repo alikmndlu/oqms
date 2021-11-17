@@ -35,4 +35,10 @@ public class AnswerController {
                 AnswerIdTextDto.AnswerListToAnswerIdTextDtoList(answerService.findAllByQuestionId(questionId))
         );
     }
+
+    @PutMapping("/teacher/answer/update/{answer-id}")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public void updateAnswer(@PathVariable("answer-id") Long answerId, @RequestBody AnswerTextDto answerDto) {
+        answerService.updateAnswer(answerId, answerDto);
+    }
 }

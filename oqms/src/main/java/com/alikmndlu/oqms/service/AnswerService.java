@@ -10,4 +10,6 @@ public interface AnswerService extends BaseService<Answer, Long> {
     void insertAnswer(Long questionId, AnswerTextDto answerDto);
 
     List<Answer> findAllByQuestionId(Long questionId);
+
+    void updateAnswer(Long answerId, AnswerTextDto answerDto);
 }

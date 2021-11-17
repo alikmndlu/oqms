@@ -42,4 +42,16 @@ public class AnswerServiceImpl extends BaseServiceImpl<Answer, Long, AnswerRepos
     public List<Answer> findAllByQuestionId(Long questionId) {
         return answerRepository.findAllByQuestionId(questionId);
     }
+
+    @Override
+    public void updateAnswer(Long answerId, AnswerTextDto answerDto) {
+        // Find Answer By ID
+        Answer answer = answerRepository.findById(answerId).get();
+
+        // Replace New Answer Text With Old One
+        answer.setText(answerDto.getText());
+
+        // Update And Commit Answer
+        repository.save(answer);
+    }
 }
