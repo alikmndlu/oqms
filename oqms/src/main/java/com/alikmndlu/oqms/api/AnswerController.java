@@ -41,4 +41,10 @@ public class AnswerController {
     public void updateAnswer(@PathVariable("answer-id") Long answerId, @RequestBody AnswerTextDto answerDto) {
         answerService.updateAnswer(answerId, answerDto);
     }
+
+    @DeleteMapping("/teacher/answer/delete/{answer-id}")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public void deleteAnswer(@PathVariable("answer-id") Long answerId) {
+        answerService.deleteById(answerId);
+    }
 }
