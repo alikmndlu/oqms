@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -35,5 +36,10 @@ public class AnswerServiceImpl extends BaseServiceImpl<Answer, Long, AnswerRepos
                         multiSelectQuestion
                 )
         );
+    }
+
+    @Override
+    public List<Answer> findAllByQuestionId(Long questionId) {
+        return answerRepository.findAllByQuestionId(questionId);
     }
 }

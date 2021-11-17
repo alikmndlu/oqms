@@ -35,7 +35,7 @@ public class QuizResourceController {
         log.info("New Quiz Added");
     }
 
-    @GetMapping("teacher/quizes/course/{courseId}")
+    @GetMapping("teacher/quizzes/course/{courseId}")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     public ResponseEntity<List<QuizIdTitleInfoTimeDto>> getQuizzes(@PathVariable("courseId") Long courseId) {
         List<QuizIdTitleInfoTimeDto> quizzes =
