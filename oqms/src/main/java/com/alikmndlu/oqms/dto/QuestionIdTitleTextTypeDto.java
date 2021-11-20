@@ -31,7 +31,7 @@ public class QuestionIdTitleTextTypeDto {
                         question.getId(),
                         question.getTitle(),
                         question.getText(),
-                        Question.getType(question)
+                        question.getType()
                 )).collect(Collectors.toList());
     }
 }

@@ -37,8 +37,8 @@ public class Question extends BaseModel<Long>{
         this.teacher = teacher;
     }
 
-    public static QuestionType getType(Question question){
-        if (question.getTrueAnswer() == null || question.getAnswers().size() == 0){
+    public QuestionType getType(){
+        if (this.getTrueAnswer() == null || this.getAnswers().size() == 0){
             return QuestionType.DESCRIPTIVE;
         }
         return QuestionType.MULTI_SELECT;

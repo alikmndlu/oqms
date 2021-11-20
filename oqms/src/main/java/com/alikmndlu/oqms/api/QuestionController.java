@@ -5,6 +5,7 @@ import com.alikmndlu.oqms.dto.QuestionIdTitleTextTypeDto;
 import com.alikmndlu.oqms.model.Answer;
 import com.alikmndlu.oqms.model.Question;
 import com.alikmndlu.oqms.model.User;
+import com.alikmndlu.oqms.model.enums.QuestionType;
 import com.alikmndlu.oqms.service.AnswerService;
 import com.alikmndlu.oqms.service.QuestionService;
 import com.alikmndlu.oqms.service.UserService;
@@ -41,10 +42,8 @@ public class QuestionController {
 
         Map<String, Object> map = new HashMap<>();
         map.put("id", question.getId());
-        if (question.getAnswers().size() == 0 || question.getTrueAnswer() == null) {
-            map.put("type", "Tashrihi");
-        } else {
-            map.put("type", "MultiSelect");
+        map.put("type", question.getType().name());
+        if (question.getType().equals(QuestionType.MULTI_SELECT)) {
             map.put("answers", question.getAnswers().stream().map(Answer::getText).collect(Collectors.toList()));
             map.put("trueAnswer", question.getTrueAnswer().getText());
         }
