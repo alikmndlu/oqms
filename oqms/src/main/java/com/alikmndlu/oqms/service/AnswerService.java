@@ -12,4 +12,6 @@ public interface AnswerService extends BaseService<Answer, Long> {
     List<Answer> findAllByQuestionId(Long questionId);
 
     void updateAnswer(Long answerId, AnswerTextDto answerDto);
+
+    void attachTrueAnswerToQuestion(Long questionId, Long answerId);
 }

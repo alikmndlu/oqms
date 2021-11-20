@@ -20,5 +20,5 @@ public class Answer extends BaseModel<Long> {
     private String text;
 
     @ManyToOne
-    private MultiSelectQuestion question;
+    private Question question;
 }

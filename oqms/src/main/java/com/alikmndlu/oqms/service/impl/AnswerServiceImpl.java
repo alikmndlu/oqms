@@ -2,10 +2,10 @@ package com.alikmndlu.oqms.service.impl;
 
 import com.alikmndlu.oqms.dto.AnswerTextDto;
 import com.alikmndlu.oqms.model.Answer;
-import com.alikmndlu.oqms.model.MultiSelectQuestion;
+import com.alikmndlu.oqms.model.Question;
 import com.alikmndlu.oqms.repository.AnswerRepository;
 import com.alikmndlu.oqms.service.AnswerService;
-import com.alikmndlu.oqms.service.MultiSelectQuestionService;
+import com.alikmndlu.oqms.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -20,20 +20,20 @@ public class AnswerServiceImpl extends BaseServiceImpl<Answer, Long, AnswerRepos
 
     private final AnswerRepository answerRepository;
 
-    private final MultiSelectQuestionService multiSelectQuestionService;
+    private final QuestionService questionService;
 
-    public AnswerServiceImpl(AnswerRepository answerRepository, MultiSelectQuestionService multiSelectQuestionService) {
+    public AnswerServiceImpl(AnswerRepository answerRepository, QuestionService questionService) {
         super(answerRepository);
         this.answerRepository = answerRepository;
-        this.multiSelectQuestionService = multiSelectQuestionService;
+        this.questionService = questionService;
     }
 
     @Override
     public void insertAnswer(Long questionId, AnswerTextDto answerDto) {
-        MultiSelectQuestion multiSelectQuestion = multiSelectQuestionService.findById(questionId).get();
+        Question question = questionService.findById(questionId).get();
         save(new Answer(
                         answerDto.getText(),
-                        multiSelectQuestion
+                question
                 )
         );
     }
@@ -53,5 +53,17 @@ public class AnswerServiceImpl extends BaseServiceImpl<Answer, Long, AnswerRepos
 
         // Update And Commit Answer
         repository.save(answer);
+    }
+
+    @Override
+    public void attachTrueAnswerToQuestion(Long questionId, Long answerId) {
+        // Find Question
+        Question question = questionService.findById(questionId).get();
+
+        // Find Answer
+        Answer trueAnswer = answerRepository.findById(answerId).get();
+
+        // Assign TrueAnswer To Question
+        question.setTrueAnswer(trueAnswer);
     }
 }

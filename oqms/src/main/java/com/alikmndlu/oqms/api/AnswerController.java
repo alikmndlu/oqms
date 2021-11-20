@@ -22,15 +22,15 @@ public class AnswerController {
 
     private final AnswerService answerService;
 
-    @PostMapping("/teacher/msq/{question-id}/answer/create")
+    @PostMapping("/teacher/question/{question-id}/answer/create")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     public void createAnswer(@PathVariable("question-id") Long questionId, @RequestBody AnswerTextDto answerDto) {
         answerService.insertAnswer(questionId, answerDto);
     }
 
-    @GetMapping("/teacher/msq/{question-id}/answers")
+    @GetMapping("/teacher/question/{question-id}/answers")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public ResponseEntity<List<AnswerIdTextDto>> createAnswer(@PathVariable("question-id") Long questionId) {
+    public ResponseEntity<List<AnswerIdTextDto>> getQuestionAnswers(@PathVariable("question-id") Long questionId) {
         return ResponseEntity.ok().body(
                 AnswerIdTextDto.AnswerListToAnswerIdTextDtoList(answerService.findAllByQuestionId(questionId))
         );

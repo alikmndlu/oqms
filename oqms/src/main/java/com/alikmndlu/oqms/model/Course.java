@@ -31,7 +31,7 @@ public class Course extends BaseModel<Long> {
     @ManyToMany
     private List<User> students = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "course")
     private List<Quiz> quizzes = new ArrayList<>();
 
     public Course(String title, LocalDate start, LocalDate end, User teacher) {

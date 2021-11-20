@@ -26,7 +26,8 @@ public class Quiz extends BaseModel<Long> {
     private Course course;
 
     @ManyToMany
-    private List<MultiSelectQuestion> multiSelectQuestions;
+    private List<Question> questions;
+
 
     public Quiz(String title, String info, Long time, Course course) {
         this.title = title;

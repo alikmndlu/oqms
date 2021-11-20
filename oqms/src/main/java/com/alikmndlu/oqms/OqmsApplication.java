@@ -1,13 +1,7 @@
 package com.alikmndlu.oqms;
 
-import com.alikmndlu.oqms.model.Course;
-import com.alikmndlu.oqms.model.Quiz;
-import com.alikmndlu.oqms.model.Role;
-import com.alikmndlu.oqms.model.User;
-import com.alikmndlu.oqms.service.CourseService;
-import com.alikmndlu.oqms.service.QuizService;
-import com.alikmndlu.oqms.service.RoleService;
-import com.alikmndlu.oqms.service.UserService;
+import com.alikmndlu.oqms.model.*;
+import com.alikmndlu.oqms.service.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -35,7 +29,9 @@ public class OqmsApplication {
             UserService userService,
             RoleService roleService,
             CourseService courseService,
-            QuizService quizService) {
+            QuizService quizService,
+            QuestionService questionService,
+            AnswerService answerService) {
         return args -> {
             roleService.save(new Role("ROLE_STUDENT"));
             roleService.save(new Role("ROLE_TEACHER"));
@@ -57,11 +53,65 @@ public class OqmsApplication {
             ));
 
             quizService.save(new Quiz(
-                    "Riazi 1400-09",
-                    "MAth Exam 24 Question 80 Mins Time",
-                    80L,
+                    "Spring Context Quiz",
+                    "25 Question, 30 Min Time",
+                    30L,
                     courseService.findById(1L).get()
             ));
+
+            questionService.save(new Question(
+                    "Title Test1",
+                    "Text Test1",
+                    userService.findByUsername("teacher").get()
+            ));
+
+            questionService.save(new Question(
+                    "Title Test2",
+                    "Text Test2",
+                    userService.findByUsername("teacher").get()
+            ));
+
+            answerService.save(new Answer(
+                    "Answer A1",
+                    questionService.findById(1L).get()
+            ));
+            answerService.save(new Answer(
+                    "Answer B1",
+                    questionService.findById(1L).get()
+            ));
+            answerService.save(new Answer(
+                    "Answer C1",
+                    questionService.findById(1L).get()
+            ));
+            answerService.save(new Answer(
+                    "Answer D1",
+                    questionService.findById(1L).get()
+            ));
+
+            answerService.save(new Answer(
+                    "Answer A2",
+                    questionService.findById(2L).get()
+            ));
+            answerService.save(new Answer(
+                    "Answer B2",
+                    questionService.findById(2L).get()
+            ));
+            answerService.save(new Answer(
+                    "Answer C2",
+                    questionService.findById(2L).get()
+            ));
+            answerService.save(new Answer(
+                    "Answer D2",
+                    questionService.findById(2L).get()
+            ));
+
+            Question question = questionService.findById(1L).get();
+            question.setTrueAnswer(answerService.findById(3L).get());
+            questionService.save(question);
+
+            question = questionService.findById(2L).get();
+            question.setTrueAnswer(answerService.findById(5L).get());
+            questionService.save(question);
         };
     }
 
