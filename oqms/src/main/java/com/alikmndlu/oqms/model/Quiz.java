@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "quizes_table")
@@ -25,14 +26,10 @@ public class Quiz extends BaseModel<Long> {
     @ManyToOne
     private Course course;
 
-    @ManyToMany
-    private List<Question> questions;
-
-
-    public Quiz(String title, String info, Long time, Course course) {
-        this.title = title;
-        this.info = info;
-        this.time = time;
-        this.course = course;
-    }
+//    public Quiz(String title, String info, Long time, Course course) {
+//        this.title = title;
+//        this.info = info;
+//        this.time = time;
+//        this.course = course;
+//    }
 }

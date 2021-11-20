@@ -31,7 +31,8 @@ public class OqmsApplication {
             CourseService courseService,
             QuizService quizService,
             QuestionService questionService,
-            AnswerService answerService) {
+            AnswerService answerService,
+            QuizQuestionService quizQuestionService) {
         return args -> {
             roleService.save(new Role("ROLE_STUDENT"));
             roleService.save(new Role("ROLE_TEACHER"));
@@ -112,6 +113,18 @@ public class OqmsApplication {
             question = questionService.findById(2L).get();
             question.setTrueAnswer(answerService.findById(5L).get());
             questionService.save(question);
+
+            quizQuestionService.save(new QuizQuestion(
+                    quizService.findById(1L).get(),
+                    questionService.findById(1L).get(),
+                    20L
+            ));
+
+            quizQuestionService.save(new QuizQuestion(
+                    quizService.findById(1L).get(),
+                    questionService.findById(2L).get(),
+                    20L
+            ));
         };
     }
 
