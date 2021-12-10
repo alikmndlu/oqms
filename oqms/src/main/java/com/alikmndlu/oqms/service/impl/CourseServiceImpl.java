@@ -65,4 +65,17 @@ public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepos
         User teacher = userService.findByUsername(loggedInTeacherUsername).get();
         return courseRepository.findByTeacherId(teacher.getId());
     }
+
+    @Override
+    public boolean isStudentEnrollInCourse(String studentUsername, Long courseId) {
+        Course course = courseRepository.findById(courseId).get();
+
+        return course.getStudents().stream()
+                .anyMatch(user -> user.getUsername().equals(studentUsername));
+    }
+
+    @Override
+    public List<Course> getStudentEnrollCourses(User student) {
+        return courseRepository.getStudentEnrollCourses(student);
+    }
 }

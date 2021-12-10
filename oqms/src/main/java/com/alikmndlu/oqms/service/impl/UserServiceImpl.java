@@ -1,11 +1,13 @@
 package com.alikmndlu.oqms.service.impl;
 
+import com.alikmndlu.oqms.dto.UserNameUsernameRoleDto;
 import com.alikmndlu.oqms.model.User;
 import com.alikmndlu.oqms.repository.RoleRepository;
 import com.alikmndlu.oqms.repository.UserRepository;
 import com.alikmndlu.oqms.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -38,7 +40,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRepository>
     }
 
     @Override
-    public User save(User user) {
+    public User insertNewUser(User user) {
         user.setPassword(
                 passwordEncoder.encode(user.getPassword())
         );
@@ -55,6 +57,66 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRepository>
         return userRepository.findAll().stream()
                 .filter(user -> user.getRoles().get(0).getName().equals("ROLE_TEACHER"))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> findStudents() {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRoles().get(0).getName().equals("ROLE_STUDENT"))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> findUsers() {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRoles().get(0).getName().equals("ROLE_STUDENT") ||
+                        user.getRoles().get(0).getName().equals("ROLE_TEACHER"))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> searchUsers(UserNameUsernameRoleDto userDto) {
+        System.out.println("name : " + userDto.getName());
+        System.out.println("username : " + userDto.getUsername());
+        System.out.println("role : " + userDto.getRole());
+
+        if (userDto.getName() == null && userDto.getUsername() == null) {
+            System.out.println("Here 1");
+            return userRepository.findAll().stream()
+                    .filter(user -> (userDto.getRole().equals("ROLE_STUDENT")) ?
+                            user.getRoles().get(0).getName().equals("ROLE_STUDENT") :
+                            user.getRoles().get(0).getName().equals("ROLE_TEACHER"))
+                    .collect(Collectors.toList());
+        }
+
+        if (userDto.getName() != null && userDto.getUsername() == null) {
+            return userRepository.findAllByNameLike(userDto.getName()).stream()
+                    .filter(user -> (userDto.getRole().equals("ROLE_STUDENT")) ?
+                            user.getRoles().get(0).getName().equals("ROLE_STUDENT") :
+                            user.getRoles().get(0).getName().equals("ROLE_TEACHER"))
+                    .collect(Collectors.toList());
+        }
+
+        if (userDto.getName() == null && userDto.getUsername() != null) {
+            return userRepository.findAllByUsernameLike(userDto.getUsername()).stream()
+                    .filter(user -> (userDto.getRole().equals("ROLE_STUDENT")) ?
+                            user.getRoles().get(0).getName().equals("ROLE_STUDENT") :
+                            user.getRoles().get(0).getName().equals("ROLE_TEACHER"))
+                    .collect(Collectors.toList());
+        }
+
+
+        return userRepository.searchUsers(userDto.getName(), userDto.getUsername()).stream()
+                .filter(user -> (userDto.getRole().equals("ROLE_STUDENT")) ?
+                        user.getRoles().get(0).getName().equals("ROLE_STUDENT") :
+                        user.getRoles().get(0).getName().equals("ROLE_TEACHER"))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public User getLoggedInUser() {
+        String loggedInTeacherUsername = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return findByUsername(loggedInTeacherUsername).get();
     }
 
 

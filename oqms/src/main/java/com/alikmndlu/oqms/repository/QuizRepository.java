@@ -1,5 +1,6 @@
 package com.alikmndlu.oqms.repository;
 
+import com.alikmndlu.oqms.model.Question;
 import com.alikmndlu.oqms.model.Quiz;
 import com.alikmndlu.oqms.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

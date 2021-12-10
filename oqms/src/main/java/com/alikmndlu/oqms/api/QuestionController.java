@@ -1,25 +1,19 @@
 package com.alikmndlu.oqms.api;
 
-import com.alikmndlu.oqms.dto.MultiSelectQuestionTitleTextDto;
-import com.alikmndlu.oqms.dto.QuestionIdTitleTextTypeDto;
-import com.alikmndlu.oqms.model.Answer;
-import com.alikmndlu.oqms.model.Question;
-import com.alikmndlu.oqms.model.User;
+import com.alikmndlu.oqms.dto.*;
+import com.alikmndlu.oqms.model.*;
 import com.alikmndlu.oqms.model.enums.QuestionType;
-import com.alikmndlu.oqms.service.AnswerService;
-import com.alikmndlu.oqms.service.QuestionService;
-import com.alikmndlu.oqms.service.UserService;
+import com.alikmndlu.oqms.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,6 +28,10 @@ public class QuestionController {
     private final AnswerService answerService;
 
     private final UserService userService;
+
+    private final QuizService quizService;
+
+    private final QuizQuestionService quizQuestionService;
 
     @GetMapping("/teacher/question/{question-id}")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
@@ -53,6 +51,19 @@ public class QuestionController {
         return ResponseEntity.ok().body(map);
     }
 
+    // Insert Descriptive Question By Teacher
+    @PostMapping("/teacher/question/descriptive/create")
+    @GetMapping("hasRole('ROLE_TEACHER')")
+    public void insertDescriptiveQuestion(@RequestBody QuestionTitleTextDto questionDto) {
+        questionService.insertDescriptiveQuestion(questionDto);
+    }
+
+    // Insert MultiSelect Question By Teacher
+    @PostMapping("/teacher/question/multiselect/create")
+    @GetMapping("hasRole('ROLE_TEACHER')")
+    public void insertMultiSelectQuestion(@RequestBody QuestionTitleTextAnswersTrueAnswerDto questionDto) {
+        questionService.insertMultiSelectQuestion(questionDto);
+    }
 
     @PostMapping("/teacher/question/create")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
@@ -66,9 +77,11 @@ public class QuestionController {
         questionService.updateQuestion(questionDto, questionId);
     }
 
-    @DeleteMapping("/teacher/msq/delete/{question-id}")
+    // delete question
+    @DeleteMapping("/teacher/question/delete/{question-id}")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     public void deleteQuestion(@PathVariable("question-id") Long questionId) {
+        quizQuestionService.deleteByQuestionId(questionId);
         questionService.deleteById(questionId);
     }
 
@@ -104,5 +117,50 @@ public class QuestionController {
                 )
         );
 
+    }
+
+
+    // get questions from bank of questions base on loggedIn teacher
+    @GetMapping("/teacher/bank-of-question/questions")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public ResponseEntity<List<?>> getTeacherQuestionsFromBank() {
+        List<Question> questions = questionService.getTeacherQuestionsFromBankOfQuestion();
+        return ResponseEntity.ok().body(
+                questions.stream()
+                        .map(questionService::questionObjectToQuestionDto)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    // update descriptive question
+    @PutMapping("/teacher/question/descriptive/update")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public void updateDescriptiveQuestion(@RequestBody QuestionIdTitleTextDto questionDto) {
+        questionService.updateDescriptiveQuestion(questionDto);
+    }
+
+    // update multiselect question
+    @PutMapping("/teacher/question/multiselect/update")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public void updateMultiSelectQuestion(@RequestBody QuestionIdTitleTextAnswersTrueAnswerDto questionDto) {
+        questionService.updateMultiSelectQuestion(questionDto);
+    }
+
+    // get all the questions from bank
+    // plus status base on added to quiz or not
+    @GetMapping("/teacher/questions-plus-status/{quiz-id}")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public ResponseEntity<?> getQuestionsPlusStatus(@PathVariable("quiz-id") Long quizId) {
+        List<Question> questions = questionService.findByTeacherId(userService.getLoggedInUser().getId());
+
+        List<QuestionIdTitleStatusDto> result = new ArrayList<>();
+        questions.forEach(
+                question -> result.add(new QuestionIdTitleStatusDto(
+                        question.getId(),
+                        question.getTitle(),
+                        quizQuestionService.isQuestionAddedToQuiz(quizId, question.getId())
+                )));
+
+        return ResponseEntity.ok().body(result);
     }
 }

@@ -25,10 +25,10 @@ public class Question extends BaseModel<Long>{
     @ManyToOne
     private User teacher;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Answer> answers = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Answer trueAnswer = null;
 
     public Question(String title, String text, User teacher) {

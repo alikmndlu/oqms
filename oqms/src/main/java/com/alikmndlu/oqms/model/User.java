@@ -37,4 +37,11 @@ public class User extends BaseModel<Long> {
         this.username = username;
         this.password = password;
     }
+
+    public User(String name, String username, String password, boolean isActive) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.isActive = isActive;
+    }
 }

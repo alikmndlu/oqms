@@ -2,6 +2,7 @@ package com.alikmndlu.oqms.api;
 
 import com.alikmndlu.oqms.dto.*;
 import com.alikmndlu.oqms.model.Course;
+import com.alikmndlu.oqms.model.User;
 import com.alikmndlu.oqms.service.CourseService;
 import com.alikmndlu.oqms.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -25,6 +27,28 @@ public class CourseResourceController {
     private final UserService userService;
 
     private final CourseService courseService;
+
+    @GetMapping("/course")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<CourseIdTitleStartEndTeacherDto> getCourse(
+            @RequestParam("id") Long courseId) {
+        Course course = courseService.findById(courseId).get();
+
+        // Transfer to customize Dto
+        return ResponseEntity.ok().body(
+                new CourseIdTitleStartEndTeacherDto(
+                        course.getId(),
+                        course.getTitle(),
+                        course.getStart().toString(),
+                        course.getEnd().toString(),
+                        new UserIdNameUsernameDto(
+                                course.getTeacher().getId(),
+                                course.getTeacher().getName(),
+                                course.getTeacher().getUsername()
+                        )
+                )
+        );
+    }
 
     @GetMapping("/courses")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -66,17 +90,26 @@ public class CourseResourceController {
 
     @PostMapping("/course/add-student")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void addStudentToCourse(@RequestBody UserUsernameCourseIdDto userCourseDto) {
+    public ResponseEntity<?> addStudentToCourse(@RequestBody UserUsernameCourseIdDto userCourseDto) {
+
+        // check user already enroll in course
+        if (courseService.isStudentEnrollInCourse(userCourseDto.getStudentUsername(), userCourseDto.getCourseId())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+
         courseService.addStudentToCourse(
                 userCourseDto.getCourseId(),
                 userCourseDto.getStudentUsername());
         log.info("CourseResourceController -> Add User {} To Course {}",
                 userCourseDto.getStudentUsername(),
                 userCourseDto.getCourseId());
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/course/students/{courseId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_TEACHER', 'ROLE_ADMIN')")
     public ResponseEntity<List<UserIdNameUsernameDto>> getCourseStudents(@PathVariable Long courseId) {
         log.info("CourseResourceController -> Get Enroll Students In Course {}", courseId);
         Course course = courseService.findById(courseId).get();
@@ -85,6 +118,24 @@ public class CourseResourceController {
                         course.getStudents()
                 )
         );
+    }
+
+    @DeleteMapping("/course/{course-id}/student/delete/{student-id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void deleteStudentFromCourse(
+            @PathVariable("course-id") Long courseId,
+            @PathVariable("student-id") Long studentId) {
+
+        Course course = courseService.findById(courseId).get();
+        User student = userService.findById(studentId).get();
+
+        List<User> students = course.getStudents().stream()
+                .filter(e -> !e.getUsername().equals(student.getUsername()))
+                .collect(Collectors.toList());
+
+        course.setStudents(students);
+        courseService.save(course);
+        log.info("Student {} Has Been Removed From {} Course.", student.getUsername(), course.getTitle());
     }
 
     @GetMapping("/teacher/courses")
@@ -97,6 +148,5 @@ public class CourseResourceController {
                 CourseIdTitleStartEndDto
                         .CourseListToCourseIdTitleStartEndDtoList(courses)
         );
-
     }
 }

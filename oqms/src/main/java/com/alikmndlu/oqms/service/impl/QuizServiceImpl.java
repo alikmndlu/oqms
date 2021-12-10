@@ -2,17 +2,21 @@ package com.alikmndlu.oqms.service.impl;
 
 import com.alikmndlu.oqms.dto.QuizIdTitleInfoTimeDto;
 import com.alikmndlu.oqms.dto.QuizTitleInfoTimeCourseIdDto;
+import com.alikmndlu.oqms.model.Question;
 import com.alikmndlu.oqms.model.Quiz;
 import com.alikmndlu.oqms.repository.QuizRepository;
 import com.alikmndlu.oqms.service.CourseService;
 import com.alikmndlu.oqms.service.QuizService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 
+
 @Service
+@Configurable
 @Transactional
 @Slf4j
 public class QuizServiceImpl extends BaseServiceImpl<Quiz, Long, QuizRepository>
@@ -51,5 +55,7 @@ public class QuizServiceImpl extends BaseServiceImpl<Quiz, Long, QuizRepository>
         quiz.setTitle(quizDto.getTitle());
         quiz.setInfo(quizDto.getInfo());
         quiz.setTime(quizDto.getTime());
+        quiz.setIsComplete(quizDto.getIsComplete());
     }
+
 }

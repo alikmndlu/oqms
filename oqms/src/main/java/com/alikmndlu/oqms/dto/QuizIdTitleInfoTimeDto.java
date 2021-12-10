@@ -21,13 +21,16 @@ public class QuizIdTitleInfoTimeDto {
 
     private Long time;
 
+    private Boolean isComplete;
+
     public static List<QuizIdTitleInfoTimeDto> quizListToQuizIdTitleInfoTimeDtoList(List<Quiz> quizzes){
         return quizzes.stream()
                 .map(quiz -> new QuizIdTitleInfoTimeDto(
                         quiz.getId(),
                         quiz.getTitle(),
                         quiz.getInfo(),
-                        quiz.getTime()
+                        quiz.getTime(),
+                        quiz.getIsComplete()
                 )).collect(Collectors.toList());
     }
 }

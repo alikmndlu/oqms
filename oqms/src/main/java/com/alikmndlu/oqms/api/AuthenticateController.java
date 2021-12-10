@@ -7,12 +7,11 @@ import com.alikmndlu.oqms.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -29,6 +28,7 @@ public class AuthenticateController {
 
     private final RoleService roleService;
 
+//    @CrossOrigin(origins = "http://localhost:8081")
     @PostMapping("/register")
     public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserRegisterDto userDto, BindingResult result) {
         StringBuilder errorMessage = new StringBuilder("Error: \n");
@@ -53,7 +53,7 @@ public class AuthenticateController {
         }
 
         // Save New User In Database
-        User user = userService.save(
+        User user = userService.insertNewUser(
                 new User(
                         userDto.getName(),
                         userDto.getUsername(),
@@ -69,5 +69,14 @@ public class AuthenticateController {
 
         // Return User
         return ResponseEntity.ok().body(user);
+    }
+
+    // Check User Is Active Or Not
+    @GetMapping("/is-active")
+    @PreAuthorize("hasAnyRole('ROLE_STUDENT', 'ROLE_TEACHER', 'ROLE_ADMIN')")
+    public ResponseEntity<Boolean> isUserActive(){
+        String loggedInUserUsername = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUsername(loggedInUserUsername).get();
+        return ResponseEntity.ok().body(user.isActive());
     }
 }
