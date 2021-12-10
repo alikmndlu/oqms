@@ -19,6 +19,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ExamController {
 
+    //todo disable answers after select true answer
+    //todo xss attack fix
+
     private final ExamAnswerService examAnswerService;
 
     private final UserService userService;
